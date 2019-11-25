@@ -1,0 +1,140 @@
+#include <iostream>
+using namespace std;
+
+int gcd(int a, unsigned int b) { 
+	if (0 == b) return a;
+	if(a<0) a=a*-1;
+	return gcd(b, a % b);
+};
+
+struct Rational { 
+	int m;
+	unsigned int n;
+	Rational(int a, unsigned int b) {
+		m = a / gcd(a, b);
+		n = b / gcd(a, b);
+	}
+	Rational(Rational& X) { 
+		m = X.m;
+		n = X.n;
+	}
+
+	Rational& operator*= (Rational& b) { 
+		m *= b.m;
+		n *= b.n;
+		int g = gcd(m, n);
+		m /= g;
+		n /= g;
+		return *this;
+	}
+	Rational& operator/= (Rational& b) { 
+		m *= b.n;
+		n *= b.m;
+		int g = gcd(m, n);
+		m /= g;
+		n /= g;
+		return *this;
+	}
+	Rational& operator+= (Rational& b) {
+		m = m * b.n + b.m * n;
+		n *= b.n;
+		int g = gcd(m, n);
+		m /= g;
+		n /= g;
+		return *this;
+	}
+	Rational& operator-= (Rational& b) {
+		m = m * b.n - b.m * n;
+		n *= b.n;
+		int g = gcd(m, n);
+		m /= g;
+		n /= g;
+		return *this;
+	}
+};
+
+
+
+Rational operator* (Rational a, Rational& b) { 
+	a *= b;
+	int g = gcd(a.m, a.n);
+	a.m /= g;
+	a.n /= g;
+	return a;
+};
+
+Rational operator/ (Rational a, Rational& b) { 
+	a /= b;
+	int g = gcd(a.m, a.n);
+	a.m /= g;
+	a.n /= g;
+	return a;
+};
+
+Rational operator+ (Rational a, Rational& b) {
+	a += b;
+	int g = gcd(a.m, a.n);
+	a.m /= g;
+	a.n /= g;
+	return a;
+};
+Rational operator- (Rational a, Rational& b) {
+	a -= b;
+	int g = gcd(a.m, a.n);
+	a.m /= g;
+	a.n /= g;
+	return a;
+};
+bool operator> (Rational& a, Rational& b) { 
+	return (a.m * b.n > a.n * b.m);
+};
+
+bool operator<= (Rational& a, Rational& b) { 
+	return !(a > b);
+};
+
+bool operator< (Rational& a, Rational& b) { 
+	return (a.m * b.n < a.n * b.m);
+};
+
+bool operator>= (Rational& a, Rational& b) { 
+	return !(a < b);
+};
+
+bool operator== (Rational& a, Rational& b) { 
+	return ((a.m == b.m) && (a.n == b.n));
+};
+
+ostream& operator<<(ostream& out, const Rational& a) { 
+	return out << a.m << "/" << a.n;
+};
+
+istream& operator>>(istream& in, Rational& a) {
+	in >> a.m >> a.n;
+	int g = gcd(a.m, a.n);
+	a.m /= g;
+	a.n /= g;
+	return in;
+};
+
+void test(Rational& num1, Rational& num2) { 
+	cout << num1 << " + " << num2 << " = " << num1 + num2 << '\n';
+	cout << num1 << " - " << num2 << " = " << num1 - num2 << '\n';
+	cout << num1 << " / " << num2 << " = " << num1 / num2 << '\n';
+	cout << num1 << " * " << num2 << " = " << num1* num2 << '\n';
+	if (num1 > num2) cout << num1 << " > " << num2 << '\n';
+	if (num1 == num2) cout << num1 << " = " << num2 << '\n';
+	if (num1 < num2) cout << num1 << " < " << num2 << '\n';
+
+	
+	
+}
+
+int main()
+{
+	Rational num1(1, 1), num2(1, 1);
+	cin >> num1;
+	cin >> num2;
+	test(num1, num2);
+	return 0;
+}
