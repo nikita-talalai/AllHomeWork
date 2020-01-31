@@ -5,11 +5,15 @@ struct Array
 {
 	int size;
 	int* array;
-	Array(int size,int* array) 
+	Array(int s, int* arr) 
 	{
-		this->size = size;
-		this->array = new int[size];
-		this->array = array;
+		size = s;
+		array = new int[size];
+		for (int i = 0; i < size; i++) 
+		{
+			array[i] = arr[i];
+		}
+		
 		cout << "Здесь сработал конструктор" << endl;
 	}
 	~Array()
@@ -33,7 +37,11 @@ struct Array
 	}
 	const Array& operator=(const Array& a) 
 	{
-		if (this == &a)  return *this; 
+		if (this == &a) 
+		{
+			cout << "Здеcь сработал оператор равно. Один и тот же объект" << endl;
+			return *this;
+		}
 		delete[] array;
 		size = a.size;
 		array = new int[size];
@@ -44,15 +52,24 @@ struct Array
 		cout << "Здеcь сработал оператор равно" << endl;
 		return *this;
 	}
-		
+	const int& operator[](int i)
+	{
+		if ((i < 0) | (i >= size))
+		{
+			cout << "Error";
+			return array[0];
+		}
+		return array[i];
+	}
 };
-void print(Array& a) 
+
+void print(Array& a)
 {
-	cout << a.array;
+	for (int i = 0; i < a.size; i++)
+	{
+		cout << a[i] << endl;
+	}
 }
-ostream& operator<<(ostream& out, const Array& a) {
-	return out << a.array << endl << a.size;
-};
 
 
 int main() 
@@ -65,9 +82,11 @@ int main()
 	{
 		cin >> array[i];
 	}
-	Array a(size,array);
-	Array copy(a);
-	cout << a << endl;
-	cout << copy << endl;
+	Array a(size, array);
+	print(a);
+	Array b(a);
+	print(b);
+	a = a;
+	b = a;
 	return 0;
 }
