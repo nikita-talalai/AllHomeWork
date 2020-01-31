@@ -1,31 +1,34 @@
 #include <iostream>
 using namespace std;
 
-struct Array
+struct Vector
 {
 	int size;
+	int capacity;
 	int* array;
-	Array(int s, int* arr) 
+	Vector(int s, int* arr)
 	{
 		size = s;
+		capacity = size;
 		array = new int[size];
-		for (int i = 0; i < size; i++) 
+		for (int i = 0; i < size; i++)
 		{
 			array[i] = arr[i];
 		}
-		
+
 		cout << "Здесь сработал конструктор" << endl;
 	}
-	~Array()
+	~Vector()
 	{
 		delete[] array;
 		cout << "Здесь сработал деструктор" << endl;
 	}
-	Array(const Array& a) 
+	Vector(const Vector& a)
 	{
-		if (this != &a) 
+		if (this != &a)
 		{
 			size = a.size;
+			capacity = a.capacity;
 			array = new int[size];
 			for (int i = 0; i < size; i++)
 			{
@@ -35,9 +38,9 @@ struct Array
 		}
 		cout << "Здеcь сработал конструктор копий" << endl;
 	}
-	const Array& operator=(const Array& a) 
+	const Vector& operator=(const Vector& a)
 	{
-		if (this == &a) 
+		if (this == &a)
 		{
 			cout << "Здеcь сработал оператор равно. Один и тот же объект" << endl;
 			return *this;
@@ -61,18 +64,44 @@ struct Array
 		}
 		return array[i];
 	}
-};
-
-void print(Array& a)
-{
-	for (int i = 0; i < a.size; i++)
+	void push_back(int x)
 	{
-		cout << a[i] << endl;
+		if (size == capacity)
+		{
+			capacity *= 2;
+			int* temp = new int[capacity];
+			for (int i = 0; i < size; i++)
+			{
+				temp[i] = array[i];
+			}
+			delete[] array;
+			array = temp;
+		}
+		array[size] = x;
+		size++;
+		cout << "Добавили в конец число" << endl;
 	}
-}
+	void resize(int x)
+	{
+		if (x > capacity)
+		{
+			capacity += x - capacity;
+		}
+		size = x;
+		cout << "Изменили размер" << endl;
+	}
+	};
+
+	void print(Vector& a)
+	{
+		for (int i = 0; i < a.size; i++)
+		{
+			cout << a[i] << endl;
+		}
+	}
 
 
-int main() 
+int main()
 {
 	setlocale(LC_ALL, "ru");
 	int size;
@@ -82,11 +111,16 @@ int main()
 	{
 		cin >> array[i];
 	}
-	Array a(size, array);
+	Vector a(size, array);
 	print(a);
-	Array b(a);
+	Vector b(a);
 	print(b);
 	a = a;
 	b = a;
+	a.push_back(2);
+	print(a);
+	a.resize(3);
+	print(a);
+	cout << "Текущий размер: " << a.size << endl;
 	return 0;
 }
