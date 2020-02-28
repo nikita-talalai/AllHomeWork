@@ -64,32 +64,42 @@ int main()
 {
     int n; //number of brackets
     char x; //input char
-    cin >> n >> x;//first char
+    cin >> n;
+    cin >> x; //first char
     Stack a(x);
-    for(int i = 1;i<n;i++){
+    for(int i = 1; i<n; i++){
         cin >> x;
         a.push(x);
     }
     
     if(char(a.pop())=='('){;
         cout << "FALSE";
-        return -1;
+        return 0;
     }
-    int sum = 1;
-    for(int i = 1;i<n;i++){
-        if(char(a.pop())==')'){
-            sum++;
+    int openbrackets = 1;
+    int closebrackets = 0;
+    for(int i = 1;i < n; i++)
+    {
+        if(char(a.pop())=='(')
+        {
+            closebrackets++;
         }else{
-            sum--;
+            openbrackets++;
         }
-       
-    }   
-    if(sum==0)
-    {
-        cout<< "TRUE";
-    }else
-    {
-       cout << "FALSE"; 
-    }
-    return 0;
+        
+       if(openbrackets < closebrackets)
+        {
+            cout << "FALSE";
+            return 0;
+        }
+    } 
+    
+    if(openbrackets==closebrackets)
+        {
+            cout << "TRUE";
+        }else{
+            cout << "FALSE";
+        }
+        
+   return 0;
 }
