@@ -1,65 +1,104 @@
+//Чем меньше приоритет элемента, тем раньше он будет извлечён. 
+
 #include <iostream>
 using namespace std;
-
-//priority = 1 > priority = 2
 
 struct Node
 {
     int priority;
-    Node* next = NULL;
+    Node* next;
 };
+
 
 struct PriorityQueue
 {
-    Node* head = NULL;
-    PriorityQueue(int priority)
+    Node* head=NULL;
+    Node* tail=NULL;
+    Node* iterator;
+    PriorityQueue(int x)
     {
         head = new Node;
-        head -> priority = priority;
+        tail = new Node;
+        head -> priority = x;
+        tail -> priority = x;
     }
-    ~PriorityQueue()
+    void push(int x)
     {
-        while(head!=NULL)
-        {
-          Node* temp = head;
-          head = head-> next;
-          delete temp;
-        }
-    }
-    void push(int priority)
-    {
-        if(head==NULL)
+        if(head == NULL)
         {
             head = new Node;
-            head -> priority = priority;
+            tail = new Node;
+            head -> priority = x;
+            tail -> priority = x;
             return;
         }
-        
         Node* temp = new Node;
-        temp -> priority = priority;
-            temp->next = head;
-            head=temp;
-            return;
+        temp -> priority = x;
+      
+        if(x > tail -> priority)
+        {
+            temp -> next = tail;
+            tail = temp;
+        }
+        else
+        {
+            Node* prev = new Node;
+            iterator=tail;
+            while(x < iterator -> priority)
+            {
+                if(iterator -> next == NULL)
+                {
+                    iterator -> next = temp;
+                    head = temp;
+                    return;
+                }
+                prev = iterator;
+                iterator = iterator -> next;
+            }
+            prev -> next = temp;
+            temp -> next = iterator;
+        }
     }
+     
     int pop()
     {
-      Node* temp = head;
-      head=head->next;
-      int a = temp->priority;
-      delete temp;
-      return a;
-       
+        Node* prev1 = new Node;
+        iterator = tail;
+        while(iterator -> next != NULL)
+        {
+            prev1 = iterator;
+            iterator = iterator -> next;
+        }
+        Node* temp = iterator;
+        int a = iterator -> priority;
+        prev1 -> next = NULL;
+        delete temp;
+        return a;
     }
 };
 
 int main()
 {
-    int priority, numberOfElements;
+    int numberOfElements,firstPriority;
+    cout << "Enter numberOfElements:";
+    cin >> numberOfElements;
+    cout << "Enter firstPriority:";
+    cin >> firstPriority;
+    PriorityQueue a(firstPriority);
     
-    cin >> numberOfElements >> priority;
-    PriorityQueue a(priority);
     for(int i = 1; i < numberOfElements;i++)
     {
+        cin >> firstPriority;
+        a.push(firstPriority);
+    }
+    cout << "===============" << endl;
+    
+    for(int i = 0; i < numberOfElements;i++)
+    {
+        cout << a.pop() << endl;
+    }
+    return 0;
+}
         cin >> priority;
         a.push(priority);        
     }
